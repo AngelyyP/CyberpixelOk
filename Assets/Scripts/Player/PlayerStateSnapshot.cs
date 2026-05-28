@@ -8,6 +8,7 @@ namespace CyberpixelOk.Player
         public Vector2 LookInput;
         public bool IsGrounded;
         public bool IsJetpacking;
+        public bool IsRunning;
         public bool IsDead;
         public bool IsHurt;
         public bool IsShooting;

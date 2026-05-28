@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 58346387ca272c649aec0b46f4f8b312
+guid: b86b3ae8d0bc83045b8ca469736b2c4d
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,7 +110,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Idle1_0
+      name: Punk_doublejump_0
       rect:
         serializedVersion: 2
         x: 0
@@ -125,14 +125,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 771cf9fc4dca2d54a90ca8737af668a8
-      internalID: 979701778
+      spriteID: 00d377e1a99754a4caa6dd49f1d6cb3f
+      internalID: -1241122183
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Idle1_1
+      name: Punk_doublejump_1
       rect:
         serializedVersion: 2
         x: 48
@@ -147,14 +147,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 07d31555597aa9c46b4a8b2f66b6b8e6
-      internalID: -261452787
+      spriteID: 9fdbe9281ab4df044a3a0fe743248d86
+      internalID: 1728301540
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Idle1_2
+      name: Punk_doublejump_2
       rect:
         serializedVersion: 2
         x: 96
@@ -169,14 +169,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0dd5f10428cf41a4cbe40a65939c9288
-      internalID: -269642649
+      spriteID: 27307d68be43bbd47a3d011f09fe7aed
+      internalID: -602127214
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Idle1_3
+      name: Punk_doublejump_3
       rect:
         serializedVersion: 2
         x: 144
@@ -191,8 +191,52 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: aa21fbd80fb2cca42bcd4a2156bcb874
-      internalID: -71655459
+      spriteID: ac03e10aa006a5b48aa052112f2e30ad
+      internalID: -1664961294
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Punk_doublejump_4
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f27a6006b7b4722498f046a91818369b
+      internalID: 886208124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Punk_doublejump_5
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 0
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 621ac55007067b84aa24629295a8c7c6
+      internalID: -1416462619
       vertices: []
       indices: 
       edges: []
@@ -201,7 +245,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: cac15883fb61c2f4285368e0e5d3d5ed
+    spriteID: 71e1bc605c1eacf4ca56799567e9099a
     internalID: 0
     vertices: []
     indices: 
@@ -211,12 +255,14 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":4.0,"y":1.0},"gridSpriteSize":{"x":48.0,"y":48.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":6.0,"y":1.0},"gridSpriteSize":{"x":48.0,"y":48.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      Idle1_0: 979701778
-      Idle1_1: -261452787
-      Idle1_2: -269642649
-      Idle1_3: -71655459
+      Punk_doublejump_0: -1241122183
+      Punk_doublejump_1: 1728301540
+      Punk_doublejump_2: -602127214
+      Punk_doublejump_3: -1664961294
+      Punk_doublejump_4: 886208124
+      Punk_doublejump_5: -1416462619
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

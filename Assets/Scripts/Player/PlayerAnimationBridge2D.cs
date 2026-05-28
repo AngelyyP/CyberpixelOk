@@ -19,6 +19,7 @@ namespace CyberpixelOk.Player
         [SerializeField] private string verticalSpeedParameter = "VerticalSpeed";
         [SerializeField] private string groundedParameter = "IsGrounded";
         [SerializeField] private string jetpackParameter = "IsJetpacking";
+        [SerializeField] private string runningParameter = "IsRunning";
         [SerializeField] private string deadParameter = "IsDead";
         [SerializeField] private string shootTrigger = "Shoot";
         [SerializeField] private string hurtTrigger = "Hurt";
@@ -30,6 +31,15 @@ namespace CyberpixelOk.Player
             weaponController = GetComponentInParent<PlayerWeaponController2D>();
             healthComponent = GetComponentInParent<HealthComponent>();
             animator = GetComponent<Animator>();
+        }
+
+        private void Awake()
+        {
+            if (animator != null)
+            {
+                animator.applyRootMotion = false;
+                animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+            }
         }
 
         private void OnEnable()
@@ -72,6 +82,7 @@ namespace CyberpixelOk.Player
             animator.SetFloat(verticalSpeedParameter, snapshot.VerticalSpeed);
             animator.SetBool(groundedParameter, snapshot.IsGrounded);
             animator.SetBool(jetpackParameter, snapshot.IsJetpacking);
+            animator.SetBool(runningParameter, snapshot.IsRunning);
             animator.SetBool(deadParameter, snapshot.IsDead);
 
             if (jetpackParticles != null)
