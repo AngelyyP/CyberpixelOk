@@ -12,14 +12,31 @@ namespace CyberpixelOk.Player
         [Header("References")]
         [SerializeField] private GameInputReader inputReader;
         [SerializeField] private PlayerMotor2D motor;
+        [SerializeField] private Rigidbody2D body;
+        [SerializeField] private Collider2D[] playerColliders;
         [SerializeField] private HealthComponent healthComponent;
         [SerializeField] private WeaponInventory weaponInventory;
 
+        [Header("Jump")]
+        [SerializeField] private LayerMask groundLayers = ~0;
+        [SerializeField] private float jumpForce = 14f;
+        [SerializeField] private float coyoteTime = 0.12f;
+        [SerializeField] private float jumpBufferTime = 0.12f;
+        [SerializeField] private float groundProbeDistance = 0.2f;
+        [SerializeField] private float groundProbeInset = 0.02f;
+
         public PlayerStateSnapshot CurrentSnapshot { get; private set; }
+
+        private bool isGrounded;
+        private bool jumpQueued;
+        private float coyoteTimer;
+        private float jumpBufferTimer;
 
         private void Reset()
         {
             motor = GetComponent<PlayerMotor2D>();
+            body = GetComponent<Rigidbody2D>();
+            playerColliders = GetComponentsInChildren<Collider2D>(true);
             healthComponent = GetComponent<HealthComponent>();
             weaponInventory = GetComponent<WeaponInventory>();
             inputReader = FindFirstObjectByType<GameInputReader>();
@@ -30,6 +47,16 @@ namespace CyberpixelOk.Player
             if (motor == null)
             {
                 motor = GetComponent<PlayerMotor2D>();
+            }
+
+            if (body == null)
+            {
+                body = GetComponent<Rigidbody2D>();
+            }
+
+            if (playerColliders == null || playerColliders.Length == 0)
+            {
+                playerColliders = GetComponentsInChildren<Collider2D>(true);
             }
 
             if (healthComponent == null)
@@ -85,19 +112,23 @@ namespace CyberpixelOk.Player
 
         private void Update()
         {
-            if (inputReader == null || motor == null || healthComponent == null)
+            if (inputReader == null || motor == null || healthComponent == null || body == null)
             {
                 return;
             }
 
-            motor.SetInput(inputReader.Move, false, inputReader.JetpackHeld);
+            UpdateGroundState();
+            UpdateJumpTimers(Time.deltaTime);
+
+            motor.SetInput(inputReader.Move, false, inputReader.JetpackHeld, inputReader.RunHeld);
 
             CurrentSnapshot = new PlayerStateSnapshot
             {
                 MoveInput = inputReader.Move,
                 LookInput = inputReader.Look,
-                IsGrounded = motor.IsGrounded,
+                IsGrounded = isGrounded,
                 IsJetpacking = motor.IsJetpacking,
+                IsRunning = motor.IsRunning,
                 IsDead = healthComponent.IsDead,
                 IsHurt = false,
                 IsShooting = false,
@@ -109,22 +140,26 @@ namespace CyberpixelOk.Player
 
         public void QueueJump()
         {
-            if (motor == null || inputReader == null)
+            if (body == null)
             {
                 return;
             }
 
-            motor.SetInput(inputReader.Move, true, inputReader.JetpackHeld);
+            jumpQueued = true;
+            jumpBufferTimer = jumpBufferTime;
+            TryPerformJump();
         }
 
         private void HandleJumpPressed()
         {
-            if (motor == null || inputReader == null)
+            if (body == null)
             {
                 return;
             }
 
-            motor.SetInput(inputReader.Move, true, inputReader.JetpackHeld);
+            jumpQueued = true;
+            jumpBufferTimer = jumpBufferTime;
+            TryPerformJump();
         }
 
         public void SetFuel(float fuelAmount)
@@ -144,6 +179,131 @@ namespace CyberpixelOk.Player
             PlayerStateSnapshot snapshot = CurrentSnapshot;
             snapshot.IsDead = true;
             CurrentSnapshot = snapshot;
+        }
+
+        private void UpdateGroundState()
+        {
+            bool grounded = CheckGrounded();
+
+            if (grounded)
+            {
+                coyoteTimer = coyoteTime;
+            }
+            else if (coyoteTimer > 0f)
+            {
+                coyoteTimer = Mathf.Max(0f, coyoteTimer - Time.deltaTime);
+            }
+
+            isGrounded = grounded;
+        }
+
+        private void UpdateJumpTimers(float deltaTime)
+        {
+            if (jumpQueued && jumpBufferTimer > 0f)
+            {
+                jumpBufferTimer -= deltaTime;
+                if (jumpBufferTimer <= 0f)
+                {
+                    jumpQueued = false;
+                }
+            }
+
+            if (jumpQueued)
+            {
+                TryPerformJump();
+            }
+        }
+
+        private void TryPerformJump()
+        {
+            if (!jumpQueued || body == null)
+            {
+                return;
+            }
+
+            if (!isGrounded && coyoteTimer <= 0f)
+            {
+                return;
+            }
+
+            Vector2 velocity = body.linearVelocity;
+            velocity.y = jumpForce;
+            body.linearVelocity = velocity;
+
+            isGrounded = false;
+            coyoteTimer = 0f;
+            jumpQueued = false;
+            jumpBufferTimer = 0f;
+        }
+
+        private bool CheckGrounded()
+        {
+            Vector2 origin = GetGroundProbeOrigin();
+            RaycastHit2D[] hits = Physics2D.RaycastAll(origin, Vector2.down, groundProbeDistance, groundLayers);
+
+            for (int index = 0; index < hits.Length; index++)
+            {
+                Collider2D hitCollider = hits[index].collider;
+                if (hitCollider != null && !IsSelfCollider(hitCollider))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private Vector2 GetGroundProbeOrigin()
+        {
+            if (playerColliders != null)
+            {
+                bool hasBounds = false;
+                Bounds combinedBounds = default;
+
+                for (int index = 0; index < playerColliders.Length; index++)
+                {
+                    Collider2D collider = playerColliders[index];
+                    if (collider == null)
+                    {
+                        continue;
+                    }
+
+                    if (!hasBounds)
+                    {
+                        combinedBounds = collider.bounds;
+                        hasBounds = true;
+                    }
+                    else
+                    {
+                        combinedBounds.Encapsulate(collider.bounds);
+                    }
+                }
+
+                if (hasBounds)
+                {
+                    return new Vector2(combinedBounds.center.x, combinedBounds.min.y + groundProbeInset);
+                }
+            }
+
+            return body != null ? body.position : (Vector2)transform.position;
+        }
+
+        private bool IsSelfCollider(Collider2D collider)
+        {
+            if (collider == null || playerColliders == null)
+            {
+                return false;
+            }
+
+            for (int index = 0; index < playerColliders.Length; index++)
+            {
+                if (playerColliders[index] == collider)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void RestoreFromSession()

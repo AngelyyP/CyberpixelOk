@@ -26,7 +26,8 @@ namespace CyberpixelOk.Systems
         public bool AttackHeld { get; private set; }
         public bool SprintHeld { get; private set; }
         public bool CrouchHeld { get; private set; }
-        public bool JetpackHeld => SprintHeld || jetpackHeld;
+        public bool JetpackHeld => jetpackHeld;
+        public bool RunHeld => SprintHeld;
 
         private InputActionMap actionMap;
         private InputAction moveAction;

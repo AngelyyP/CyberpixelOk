@@ -7,6 +7,7 @@ namespace CyberpixelOk.Player
     {
         [Header("Movement")]
         [SerializeField] private float maxMoveSpeed = 7f;
+        [SerializeField] private float maxRunSpeed = 10f;
         [SerializeField] private float groundAcceleration = 70f;
         [SerializeField] private float airAcceleration = 35f;
 
@@ -21,6 +22,7 @@ namespace CyberpixelOk.Player
         [SerializeField] private float groundCheckRadius = 0.12f;
 
         public float MaxMoveSpeed => maxMoveSpeed;
+        public float MaxRunSpeed => maxRunSpeed;
         public float GroundAcceleration => groundAcceleration;
         public float AirAcceleration => airAcceleration;
         public float JumpForce => jumpForce;
