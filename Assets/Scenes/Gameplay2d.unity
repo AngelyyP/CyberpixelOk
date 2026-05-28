@@ -5112,7 +5112,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CyberpixelOk.Player.PlayerController2D
   inputReader: {fileID: 1266167082}
   motor: {fileID: 198227414}
-  body: {fileID: 0}
+  body: {fileID: 198227415}
   playerColliders: []
   healthComponent: {fileID: 198227413}
   weaponInventory: {fileID: 198227412}
@@ -5287,6 +5287,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 813577004}
+  - {fileID: 1700918353}
   m_Father: {fileID: 1164988017}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &248327479
@@ -6037,7 +6038,6 @@ Transform:
   - {fileID: 1024554001}
   - {fileID: 198227418}
   - {fileID: 572859715}
-  - {fileID: 1700918353}
   - {fileID: 1870306804}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -10859,12 +10859,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1700918352}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.44, y: -9.17, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.062, y: -0.024999999, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1164988017}
+  m_Father: {fileID: 198227418}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1701698029
 GameObject:

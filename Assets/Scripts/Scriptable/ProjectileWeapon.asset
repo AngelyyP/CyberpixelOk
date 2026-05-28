@@ -18,7 +18,7 @@ MonoBehaviour:
   usesAmmo: 1
   magazineSize: 12
   startingReserveAmmo: 24
-  projectilePrefab: {fileID: 0}
+  projectilePrefab: {fileID: 4101718998058660292, guid: a1baf3830fb5b674bbf55778542d801d, type: 3}
   projectileSpeed: 18
   projectileLifetime: 3
   localSpawnOffset: {x: 0.35, y: 0, z: 0}
