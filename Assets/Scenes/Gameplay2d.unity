@@ -5119,7 +5119,7 @@ MonoBehaviour:
   groundLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  jumpForce: 100
+  jumpForce: 15
   coyoteTime: 0.12
   jumpBufferTime: 0.12
   groundProbeDistance: 0.2
