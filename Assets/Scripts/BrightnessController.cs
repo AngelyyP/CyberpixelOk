@@ -8,7 +8,7 @@ public class BrightnessController : MonoBehaviour
 
     void Start()
     {
-        brightnessSlider.value = 1f;
+        brightnessSlider.value = PlayerPrefs.GetFloat("Brightness", 1f);
     }
 
     void Update()
@@ -18,5 +18,7 @@ public class BrightnessController : MonoBehaviour
         color.a = 1 - brightnessSlider.value;
 
         brightnessPanel.color = color;
+
+        PlayerPrefs.SetFloat("Brightness", brightnessSlider.value);
     }
 }
