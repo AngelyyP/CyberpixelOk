@@ -1,5 +1,6 @@
 /*using UnityEngine;
 using UnityEngine.SceneManagement;
+using CyberpixelOk.Managers;
 
 public class MenuManager : MonoBehaviour
 {
@@ -20,6 +21,12 @@ public class MenuManager : MonoBehaviour
 
     public void PlayGame()
     {
+        if (GameFlowManager.Instance != null)
+        {
+            GameFlowManager.Instance.StartGameplay2D();
+            return;
+        }
+
         SceneManager.LoadScene("Gameplay2d");
     }
 }*/
