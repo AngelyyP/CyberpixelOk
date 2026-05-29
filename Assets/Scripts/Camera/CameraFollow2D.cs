@@ -21,6 +21,7 @@ namespace CyberpixelOk.Camera2D
         [SerializeField, Range(0f, 0.49f)] private float verticalDeadZone = 0.2f;
 
         private Vector3 velocity;
+        private Transform drivenTransform;
 
         private void Awake()
         {
@@ -47,16 +48,18 @@ namespace CyberpixelOk.Camera2D
                     target = player.transform;
                 }
             }
+
+            drivenTransform = followCamera != null ? followCamera.transform : null;
         }
 
         private void LateUpdate()
         {
-            if (target == null || followCamera == null)
+            if (target == null || followCamera == null || drivenTransform == null)
             {
                 return;
             }
 
-            Vector3 desiredPosition = transform.position;
+            Vector3 desiredPosition = drivenTransform.position;
             Vector3 targetViewportPosition = followCamera.WorldToViewportPoint(target.position);
 
             if (followX)
@@ -89,9 +92,9 @@ namespace CyberpixelOk.Camera2D
                 }
             }
 
-            desiredPosition.z = offset.z != 0f ? offset.z : transform.position.z;
+            desiredPosition.z = offset.z != 0f ? offset.z : drivenTransform.position.z;
 
-            if (desiredPosition == transform.position)
+            if (desiredPosition == drivenTransform.position)
             {
                 velocity = Vector3.zero;
                 return;
@@ -99,11 +102,11 @@ namespace CyberpixelOk.Camera2D
 
             if (smoothTime <= 0f)
             {
-                transform.position = desiredPosition;
+                drivenTransform.position = desiredPosition;
                 return;
             }
 
-            transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref velocity, smoothTime);
+            drivenTransform.position = Vector3.SmoothDamp(drivenTransform.position, desiredPosition, ref velocity, smoothTime);
         }
 
         private float GetCameraDeltaX(float viewportDelta)

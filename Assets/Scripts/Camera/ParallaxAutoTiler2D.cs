@@ -14,6 +14,7 @@ namespace CyberpixelOk.Camera2D
         [Header("Tiling")]
         [SerializeField, Min(2)] private int columns = 3;
         [SerializeField] private float spacing = 0f; // extra gap between tiles
+        [SerializeField, Min(0.01f)] private float fallbackTileWidth = 8f;
 
         [Header("Parallax")]
         [SerializeField, Range(0f, 1f)] private float parallaxX = 0.2f;
@@ -37,38 +38,43 @@ namespace CyberpixelOk.Camera2D
                 return;
             }
 
+            if (tilePrefab.GetComponentInChildren<ParallaxAutoTiler2D>() != null)
+            {
+                Debug.LogError($"{nameof(ParallaxAutoTiler2D)} detected on tilePrefab '{tilePrefab.name}'. Remove it from the prefab to avoid recursive instantiation.", this);
+                enabled = false;
+                return;
+            }
+
             GenerateTiles();
             CacheStart();
         }
 
         private void GenerateTiles()
         {
-            // Clear existing children we created earlier
+            columns = Mathf.Clamp(columns, 2, 8);
+
+            // Clear existing list and preserve scene children as-is.
             tiles.Clear();
 
-            // detect width from prefab renderer
-            Renderer r = tilePrefab.GetComponentInChildren<Renderer>();
-            if (r != null)
+            SpriteRenderer spriteRenderer = tilePrefab.GetComponentInChildren<SpriteRenderer>();
+            if (spriteRenderer != null && spriteRenderer.sprite != null)
             {
-                tileWidth = r.bounds.size.x;
+                tileWidth = spriteRenderer.sprite.bounds.size.x * Mathf.Abs(spriteRenderer.transform.localScale.x);
             }
 
             if (tileWidth <= 0f)
             {
-                // try to detect after instantiate one
-                GameObject temp = Instantiate(tilePrefab, transform.position, Quaternion.identity);
-                Renderer rt = temp.GetComponentInChildren<Renderer>();
-                if (rt != null)
+                Renderer renderer = tilePrefab.GetComponentInChildren<Renderer>();
+                if (renderer != null)
                 {
-                    tileWidth = rt.bounds.size.x;
+                    tileWidth = renderer.bounds.size.x;
                 }
-                DestroyImmediate(temp);
             }
 
             if (tileWidth <= 0f)
             {
-                Debug.LogWarning($"{nameof(ParallaxAutoTiler2D)} could not determine tile width. Set a SpriteRenderer with correct size on the prefab.");
-                tileWidth = 1f;
+                tileWidth = fallbackTileWidth;
+                Debug.LogWarning($"{nameof(ParallaxAutoTiler2D)} could not determine tile width. Using fallback width {fallbackTileWidth}.", this);
             }
 
             float cellWidth = tileWidth + spacing;
@@ -81,7 +87,6 @@ namespace CyberpixelOk.Camera2D
                 GameObject go = Instantiate(tilePrefab, transform);
                 go.transform.localPosition = localPos;
                 go.transform.localRotation = Quaternion.identity;
-                go.transform.localScale = Vector3.one;
                 tiles.Add(go.transform);
             }
         }
@@ -138,8 +143,9 @@ namespace CyberpixelOk.Camera2D
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            columns = Mathf.Max(2, columns);
+            columns = Mathf.Clamp(columns, 2, 8);
             spacing = Mathf.Max(0f, spacing);
+            fallbackTileWidth = Mathf.Max(0.01f, fallbackTileWidth);
             parallaxX = Mathf.Clamp01(parallaxX);
             parallaxY = Mathf.Clamp01(parallaxY);
         }

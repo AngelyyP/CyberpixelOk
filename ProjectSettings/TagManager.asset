@@ -41,6 +41,33 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Background
+    uniqueID: 1159389439
+    locked: 0
+  - name: Parallax1
+    uniqueID: 2044112125
+    locked: 0
+  - name: Parallax2
+    uniqueID: 2445663123
+    locked: 0
+  - name: Parallax3
+    uniqueID: 2786796141
+    locked: 0
+  - name: Ground
+    uniqueID: 308292849
+    locked: 0
+  - name: Cosas
+    uniqueID: 1860002677
+    locked: 0
+  - name: Player
+    uniqueID: 3178274089
+    locked: 0
+  - name: Arriba
+    uniqueID: 1829906687
+    locked: 0
+  - name: "M\xE1s"
+    uniqueID: 1645026565
+    locked: 0
   m_RenderingLayers:
   - Default
   - Light Layer 1
