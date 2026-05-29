@@ -25,6 +25,14 @@ namespace CyberpixelOk.Managers
         public int CollectedCollectibles { get; private set; }
         public bool HasCollectedRequiredCollectibles => collectibleRequirement > 0 && CollectedCollectibles >= collectibleRequirement;
 
+        private void Start()
+        {
+            if (collectibleRequirement < 0)
+            {
+                collectibleRequirement = 0;
+            }
+        }
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -81,10 +89,14 @@ namespace CyberpixelOk.Managers
         public void SetCollectibleRequirement(int requirement)
         {
             collectibleRequirement = Mathf.Max(0, requirement);
-            if (collectibleRequirement > 0)
+
+            if (collectibleRequirement == 0)
             {
-                CollectedCollectibles = Mathf.Clamp(CollectedCollectibles, 0, collectibleRequirement);
+                CollectedCollectibles = 0;
+                return;
             }
+
+            CollectedCollectibles = Mathf.Clamp(CollectedCollectibles, 0, collectibleRequirement);
         }
 
         public void ResetCollectibleProgress()

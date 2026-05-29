@@ -14,7 +14,7 @@ namespace CyberpixelOk.Interactions
         [SerializeField] private DialogueData completeDialogue;
 
         [Header("Transition")]
-        [SerializeField] private bool switchTo3DWhenComplete = true;
+        [SerializeField] private bool loadGameplay3DWhenComplete = true;
 
         private bool waitingForDialogueEnd;
 
@@ -30,38 +30,31 @@ namespace CyberpixelOk.Interactions
             DialogueController dialogueController = DialogueController.Instance;
             if (dialogueController == null)
             {
+                Debug.LogWarning($"{nameof(QuestGatedNpcInteractable)} on '{name}' could not find a DialogueController.", this);
                 return;
             }
 
             GameSessionManager sessionManager = GameSessionManager.Instance != null ? GameSessionManager.Instance : FindFirstObjectByType<GameSessionManager>();
-            bool hasCompletedCollectibles = sessionManager != null && sessionManager.HasCollectedRequiredCollectibles;
+            bool hasCompletedCollectibles = sessionManager != null && sessionManager.CollectibleRequirement > 0 && sessionManager.CollectedCollectibles >= sessionManager.CollectibleRequirement;
 
             DialogueData dialogueToPlay = hasCompletedCollectibles ? completeDialogue : incompleteDialogue;
             if (dialogueToPlay == null)
             {
+                Debug.LogWarning($"{nameof(QuestGatedNpcInteractable)} on '{name}' has no dialogue assigned for the current collectible state.", this);
                 return;
             }
 
-            if (hasCompletedCollectibles && switchTo3DWhenComplete)
+            Debug.Log($"{nameof(QuestGatedNpcInteractable)} on '{name}' started dialogue. Collected {sessionManager?.CollectedCollectibles ?? 0}/{sessionManager?.CollectibleRequirement ?? 0}. Completed={hasCompletedCollectibles}.", this);
+
+            dialogueController.StartDialogue(dialogueToPlay);
+
+            if (hasCompletedCollectibles && loadGameplay3DWhenComplete)
             {
                 if (!waitingForDialogueEnd)
                 {
                     waitingForDialogueEnd = true;
                     dialogueController.DialogueEnded += HandleDialogueEnded;
                 }
-            }
-
-            dialogueController.StartDialogue(dialogueToPlay);
-
-            if (!hasCompletedCollectibles || !switchTo3DWhenComplete)
-            {
-                return;
-            }
-
-            if (!dialogueController.IsDialogueActive)
-            {
-                waitingForDialogueEnd = false;
-                dialogueController.DialogueEnded -= HandleDialogueEnded;
             }
         }
 
@@ -75,10 +68,13 @@ namespace CyberpixelOk.Interactions
 
             waitingForDialogueEnd = false;
 
-            if (switchTo3DWhenComplete)
+            if (!loadGameplay3DWhenComplete)
             {
-                GameFlowManager.Instance?.StartGameplay3D();
+                return;
             }
+
+            Debug.Log($"{nameof(QuestGatedNpcInteractable)} on '{name}' finished complete dialogue. Requesting 3D scene load.", this);
+            GameFlowManager.Instance?.StartGameplay3D();
         }
     }
 }

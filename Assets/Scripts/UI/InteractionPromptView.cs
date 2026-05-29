@@ -17,6 +17,19 @@ namespace CyberpixelOk.UI
             promptText = GetComponentInChildren<TMP_Text>(true);
         }
 
+        private void Awake()
+        {
+            if (detector == null)
+            {
+                detector = FindFirstObjectByType<PlayerInteractionDetector>();
+            }
+
+            if (promptText == null)
+            {
+                promptText = GetComponentInChildren<TMP_Text>(true);
+            }
+        }
+
         private void OnEnable()
         {
             if (detector != null)

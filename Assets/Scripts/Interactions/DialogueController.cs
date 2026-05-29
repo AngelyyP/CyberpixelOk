@@ -26,16 +26,32 @@ namespace CyberpixelOk.Interactions
         {
             if (Instance != null && Instance != this)
             {
-                Destroy(gameObject);
+                Destroy(this);
                 return;
             }
 
             Instance = this;
+
+            if (inputReader == null)
+            {
+                inputReader = FindFirstObjectByType<GameInputReader>();
+            }
+
+            if (dialogueView == null)
+            {
+                dialogueView = FindFirstObjectByType<DialogueView>(FindObjectsInactive.Include);
+            }
+
             DontDestroyOnLoad(gameObject);
         }
 
         private void OnEnable()
         {
+            if (inputReader == null)
+            {
+                inputReader = FindFirstObjectByType<GameInputReader>();
+            }
+
             if (inputReader != null)
             {
                 inputReader.InteractPressed += HandleAdvancePressed;
