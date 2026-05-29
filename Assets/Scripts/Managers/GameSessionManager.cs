@@ -9,6 +9,9 @@ namespace CyberpixelOk.Managers
     {
         public static GameSessionManager Instance { get; private set; }
 
+        [Header("Collectibles")]
+        [SerializeField] private int collectibleRequirement;
+
         private readonly List<WeaponBase> savedWeapons = new List<WeaponBase>();
 
         public IReadOnlyList<WeaponBase> SavedWeapons => savedWeapons;
@@ -18,6 +21,9 @@ namespace CyberpixelOk.Managers
         public float SavedJetpackFuel { get; private set; }
         public float SavedJetpackMaxFuel { get; private set; }
         public int SavedEquippedWeaponIndex { get; private set; }
+        public int CollectibleRequirement => collectibleRequirement;
+        public int CollectedCollectibles { get; private set; }
+        public bool HasCollectedRequiredCollectibles => collectibleRequirement > 0 && CollectedCollectibles >= collectibleRequirement;
 
         private void Awake()
         {
@@ -68,6 +74,38 @@ namespace CyberpixelOk.Managers
             SavedJetpackFuel = 0f;
             SavedJetpackMaxFuel = 0f;
             SavedEquippedWeaponIndex = -1;
+            collectibleRequirement = 0;
+            CollectedCollectibles = 0;
+        }
+
+        public void SetCollectibleRequirement(int requirement)
+        {
+            collectibleRequirement = Mathf.Max(0, requirement);
+            if (collectibleRequirement > 0)
+            {
+                CollectedCollectibles = Mathf.Clamp(CollectedCollectibles, 0, collectibleRequirement);
+            }
+        }
+
+        public void ResetCollectibleProgress()
+        {
+            CollectedCollectibles = 0;
+        }
+
+        public void AddCollectedCollectible(int amount = 1)
+        {
+            if (amount <= 0)
+            {
+                return;
+            }
+
+            if (collectibleRequirement <= 0)
+            {
+                CollectedCollectibles += amount;
+                return;
+            }
+
+            CollectedCollectibles = Mathf.Clamp(CollectedCollectibles + amount, 0, collectibleRequirement);
         }
     }
 }
