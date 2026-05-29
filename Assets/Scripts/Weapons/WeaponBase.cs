@@ -54,17 +54,7 @@ namespace CyberpixelOk.Weapons
                 return false;
             }
 
-            if (usesAmmo && runtimeState.CurrentAmmo <= 0)
-            {
-                return false;
-            }
-
             runtimeState.NextAllowedFireTime = Time.time + cooldown;
-
-            if (usesAmmo)
-            {
-                runtimeState.SpendAmmo(1);
-            }
 
             Fire(context, runtimeState);
             return true;

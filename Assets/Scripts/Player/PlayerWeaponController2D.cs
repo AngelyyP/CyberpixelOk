@@ -106,6 +106,7 @@ namespace CyberpixelOk.Player
                 firePoint,
                 WeaponDirectionUtility.ResolveAimDirection(lookInput, motor.FacingRight),
                 lookInput,
+                motor.FacingRight,
                 projectilePool);
 
             if (weaponInventory.TryFireCurrentWeapon(weaponContext))

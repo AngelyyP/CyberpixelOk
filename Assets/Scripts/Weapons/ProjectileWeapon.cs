@@ -12,7 +12,7 @@ namespace CyberpixelOk.Weapons
                 return;
             }
 
-            bool facingRight = context.AimVector.x >= 0f;
+            bool facingRight = context.FacingRight;
             Vector2 fireDirection = WeaponDirectionUtility.ToVector(context.AimDirection, facingRight);
             Vector3 spawnPosition = context.FirePoint.TransformPoint(LocalSpawnOffset);
             Quaternion rotation = Quaternion.identity;
