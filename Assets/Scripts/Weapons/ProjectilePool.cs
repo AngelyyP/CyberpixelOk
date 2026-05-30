@@ -35,7 +35,22 @@ namespace CyberpixelOk.Weapons
                 pooledProjectiles.Add(prefab, queue);
             }
 
-            ProjectileBase projectile = queue.Count > 0 ? queue.Dequeue() : Instantiate(prefab);
+            ProjectileBase projectile = null;
+            while (queue.Count > 0 && projectile == null)
+            {
+                projectile = queue.Dequeue();
+            }
+
+            if (projectile == null)
+            {
+                projectile = Instantiate(prefab);
+            }
+
+            if (projectile == null)
+            {
+                return null;
+            }
+
             projectile.SetPoolKey(prefab);
             projectile.transform.SetPositionAndRotation(position, rotation);
             projectile.gameObject.SetActive(true);

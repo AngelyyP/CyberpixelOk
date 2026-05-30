@@ -22,6 +22,7 @@ namespace CyberpixelOk.Player
             inputReader = FindFirstObjectByType<GameInputReader>();
             motor = GetComponent<PlayerMotor2D>();
             weaponInventory = GetComponent<WeaponInventory>();
+            ResolveFirePoint();
         }
 
         private void Awake()
@@ -40,6 +41,8 @@ namespace CyberpixelOk.Player
             {
                 weaponInventory = GetComponent<WeaponInventory>();
             }
+
+            ResolveFirePoint();
         }
 
         private void OnEnable()
@@ -89,10 +92,12 @@ namespace CyberpixelOk.Player
 
         private void TryFireCurrentWeapon()
         {
-            if (weaponInventory == null || firePoint == null || motor == null)
+            if (weaponInventory == null || motor == null)
             {
                 return;
             }
+
+            Transform resolvedFirePoint = firePoint != null ? firePoint : transform;
 
             WeaponBase currentWeapon = weaponInventory.CurrentWeapon;
             if (currentWeapon == null)
@@ -103,7 +108,7 @@ namespace CyberpixelOk.Player
             Vector2 lookInput = inputReader != null ? inputReader.Look : Vector2.zero;
             WeaponContext weaponContext = new WeaponContext(
                 gameObject,
-                firePoint,
+                resolvedFirePoint,
                 WeaponDirectionUtility.ResolveAimDirection(lookInput, motor.FacingRight),
                 lookInput,
                 motor.FacingRight,
@@ -112,6 +117,25 @@ namespace CyberpixelOk.Player
             if (weaponInventory.TryFireCurrentWeapon(weaponContext))
             {
                 WeaponFired?.Invoke(weaponContext);
+            }
+        }
+
+        private void ResolveFirePoint()
+        {
+            if (firePoint != null)
+            {
+                return;
+            }
+
+            Transform[] childTransforms = GetComponentsInChildren<Transform>(true);
+            for (int index = 0; index < childTransforms.Length; index++)
+            {
+                Transform childTransform = childTransforms[index];
+                if (childTransform != null && childTransform != transform && childTransform.name == "FirePoint")
+                {
+                    firePoint = childTransform;
+                    return;
+                }
             }
         }
     }

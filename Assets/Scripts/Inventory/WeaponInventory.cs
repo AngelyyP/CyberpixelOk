@@ -163,6 +163,11 @@ namespace CyberpixelOk.Inventory
                 return;
             }
 
+            if (sessionManager.SavedWeapons.Count == 0)
+            {
+                return;
+            }
+
             loadout.Clear();
             for (int index = 0; index < sessionManager.SavedWeapons.Count; index++)
             {
