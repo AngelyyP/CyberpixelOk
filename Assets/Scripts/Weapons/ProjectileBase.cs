@@ -76,7 +76,7 @@ namespace CyberpixelOk.Weapons
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other == null || other.gameObject == owner)
+            if (other == null || BelongsToOwner(other.transform))
             {
                 return;
             }
@@ -114,6 +114,18 @@ namespace CyberpixelOk.Weapons
             pool = null;
             lifetimeTimer = 0f;
             travelDirection = Vector2.zero;
+        }
+
+        private bool BelongsToOwner(Transform otherTransform)
+        {
+            if (otherTransform == null || owner == null)
+            {
+                return false;
+            }
+
+            Transform ownerRoot = owner.transform.root;
+            Transform otherRoot = otherTransform.root;
+            return otherRoot == ownerRoot || otherTransform.IsChildOf(owner.transform);
         }
     }
 }

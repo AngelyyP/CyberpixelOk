@@ -15,11 +15,15 @@ namespace CyberpixelOk.Enemies
         [SerializeField] private Transform target;
         [SerializeField] private Transform[] patrolPoints;
 
+        [Header("Death")]
+        [SerializeField] private float deathDespawnDelay = 0.25f;
+
         public EnemyState CurrentState { get; private set; } = EnemyState.Idle;
 
         private int patrolIndex;
         private float patrolWaitTimer;
         private float nextAttackTime;
+        private bool isDespawning;
 
         protected Transform Target => target;
         protected HealthComponent TargetHealth => target != null ? target.GetComponentInParent<HealthComponent>() : null;
@@ -77,10 +81,13 @@ namespace CyberpixelOk.Enemies
                 return;
             }
 
+            FaceTarget();
+
             float distance = Vector2.Distance(transform.position, target.position);
             if (distance <= settings.AttackRange)
             {
                 SetState(EnemyState.Attack);
+                FaceTarget();
                 TryAttack();
                 return;
             }
@@ -140,6 +147,7 @@ namespace CyberpixelOk.Enemies
                 return;
             }
 
+            FaceTarget();
             MoveTowards(target.position, settings.ChaseSpeed);
         }
 
@@ -165,9 +173,9 @@ namespace CyberpixelOk.Enemies
                 return;
             }
 
-            Vector3 scale = transform.localScale;
-            scale.x = Mathf.Abs(scale.x) * (horizontalVelocity >= 0f ? 1f : -1f);
-            transform.localScale = scale;
+            Vector3 eulerAngles = transform.eulerAngles;
+            eulerAngles.z = horizontalVelocity >= 0f ? 0f : 180f;
+            transform.eulerAngles = eulerAngles;
         }
 
         private void AcquireTarget()
@@ -186,6 +194,16 @@ namespace CyberpixelOk.Enemies
             FaceMovementDirection(body.linearVelocity.x);
         }
 
+        private void FaceTarget()
+        {
+            if (target == null)
+            {
+                return;
+            }
+
+            FaceMovementDirection(target.position.x - transform.position.x);
+        }
+
         private void SetState(EnemyState newState)
         {
             CurrentState = newState;
@@ -193,8 +211,26 @@ namespace CyberpixelOk.Enemies
 
         private void HandleDeath()
         {
+            if (isDespawning)
+            {
+                return;
+            }
+
             SetState(EnemyState.Dead);
             body.linearVelocity = Vector2.zero;
+            StartCoroutine(DespawnAfterDeath());
+        }
+
+        private System.Collections.IEnumerator DespawnAfterDeath()
+        {
+            isDespawning = true;
+
+            if (deathDespawnDelay > 0f)
+            {
+                yield return new WaitForSeconds(deathDespawnDelay);
+            }
+
+            Destroy(gameObject);
         }
     }
 }
